@@ -1,4 +1,24 @@
 - [X] **Нейрость и ее разбор:**
+      
+   ```python
+  class NeuralClassification(nn.Module):
+    def __init__(self):
+        super(NeuralClassification, self).__init__()
+        self.embedding = nn.Embedding(30522, 768)
+        self.conv1 = nn.Conv1d(768, 512, kernel_size=3)
+        self.dropout = nn.Dropout(0.2)
+        self.fc = nn.Linear(512, 2)  # Изменение размерности входа на 512
+
+    def forward(self, x):
+        embedded = self.embedding(x)
+        embedded = embedded.squeeze(1).permute(0, 2, 1)  # Удаление дополнительного измерения и перестановка размерностей
+        conv = self.conv1(embedded)
+        conv = self.dropout(conv)
+        conv = F.relu(conv)
+        conv = torch.max(conv, dim=2)[0]  # Применение max pooling по временной размерности
+        output = self.fc(conv)
+        return output
+   ```
 - [X] **Рассмотрим NeuralClassification.**
 
 * ```python
